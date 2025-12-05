@@ -131,6 +131,25 @@
         .mode-btn:active {
             transform: translateY(-2px);
         }
+        
+        /* Mobile landscape mode */
+        body.mobile-mode {
+            transform: rotate(90deg);
+            transform-origin: center center;
+            width: 100vh;
+            height: 100vw;
+            overflow: hidden;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-top: -50vw;
+            margin-left: -50vh;
+        }
+        
+        body.mobile-mode #gameCanvas {
+            width: 100vh;
+            height: 100vw;
+        }
     </style>
 </head>
 <body>
@@ -204,8 +223,9 @@
         gameMode = mode;
         document.getElementById('startScreen').style.display = 'none';
         
-        // Show mobile controls if mobile mode selected
+        // Show mobile controls and rotate to landscape if mobile mode selected
         if (mode === 'mobile') {
+            document.body.classList.add('mobile-mode');
             document.getElementById('mobileControls').style.display = 'block';
         }
         
@@ -218,6 +238,12 @@
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x87CEEB);
     scene.fog = new THREE.FogExp2(0x87CEEB, 0.002);
+    
+    // Set initial canvas size based on game mode
+    if (gameMode === 'mobile') {
+        canvas.width = window.innerHeight;
+        canvas.height = window.innerWidth;
+    }
 
     // Add clouds to the sky
     const cloudMaterial = new THREE.MeshBasicMaterial({ 
@@ -239,9 +265,20 @@
         scene.add(cloud);
     }
 
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // Set camera aspect ratio based on game mode
+    const aspectRatio = gameMode === 'mobile' 
+        ? window.innerHeight / window.innerWidth 
+        : window.innerWidth / window.innerHeight;
+    
+    const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    // Set renderer size based on game mode
+    if (gameMode === 'mobile') {
+        renderer.setSize(window.innerHeight, window.innerWidth);
+    } else {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -710,6 +747,50 @@
         targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
     });
 
+    // Touch swipe for camera rotation (mobile)
+    let touchStartX = 0;
+    let isSwiping = false;
+    
+    canvas.addEventListener('touchstart', (e) => {
+        // Only track swipes outside the control buttons
+        const touch = e.touches[0];
+        const controlsElement = document.getElementById('mobileControls');
+        if (controlsElement && controlsElement.contains(e.target)) {
+            return; // Ignore touches on control buttons
+        }
+        
+        touchStartX = touch.clientX;
+        isSwiping = true;
+    }, { passive: true });
+    
+    canvas.addEventListener('touchmove', (e) => {
+        if (!isSwiping) return;
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        
+        // Update camera based on swipe (adjust sensitivity)
+        if (gameMode === 'mobile') {
+            // For mobile landscape mode, adjust for rotated screen
+            targetMouseX += deltaX * 0.003;
+        } else {
+            targetMouseX += deltaX * 0.002;
+        }
+        
+        // Clamp the value between -1 and 1
+        targetMouseX = Math.max(-1, Math.min(1, targetMouseX));
+        
+        touchStartX = touch.clientX;
+    }, { passive: true });
+    
+    canvas.addEventListener('touchend', () => {
+        isSwiping = false;
+    }, { passive: true });
+    
+    canvas.addEventListener('touchcancel', () => {
+        isSwiping = false;
+    }, { passive: true });
+
     // Smooth mouse movement
     function updateMousePosition() {
         mouseX += (targetMouseX - mouseX) * 0.1;
@@ -903,9 +984,16 @@
     }
 
     window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        // Adjust for mobile landscape mode
+        if (gameMode === 'mobile') {
+            camera.aspect = window.innerHeight / window.innerWidth;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerHeight, window.innerWidth);
+        } else {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
     });
 
     updateUI();
