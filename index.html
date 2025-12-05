@@ -90,8 +90,49 @@
         }
         
         #mobileControls {
-            transform: scale(0.7);
+            transform: scale(0.5);
             transform-origin: bottom left;
+        }
+        
+        /* Joystick styles */
+        #joystickContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            z-index: 20;
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        #joystickBase {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: rgba(46,125,50,0.4);
+            border: 3px solid rgba(255,255,255,0.4);
+            border-radius: 50%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        
+        #joystickStick {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(76,175,80,0.9);
+            border: 3px solid rgba(255,255,255,0.8);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            left: 35px;
+            top: 35px;
+            transition: none;
+        }
+        
+        body.mobile-mode #joystickContainer {
+            transform: scale(0.8);
+            transform-origin: bottom right;
         }
         
         /* Start screen */
@@ -267,7 +308,14 @@
         <button id="btnLeft" style="position: absolute; left: 0; top: 60px; width: 60px; height: 60px; background: rgba(46,125,50,0.8); color: white; border: 2px solid rgba(255,255,255,0.6); font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); font-weight: bold; border-radius: 8px;">◄</button>
         <button id="btnRight" style="position: absolute; right: 0; top: 60px; width: 60px; height: 60px; background: rgba(46,125,50,0.8); color: white; border: 2px solid rgba(255,255,255,0.6); font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); font-weight: bold; border-radius: 8px;">►</button>
     </div>
-</div><canvas id="gameCanvas"></canvas>
+</div>
+
+<div id="joystickContainer" style="display: none;">
+    <div id="joystickBase"></div>
+    <div id="joystickStick"></div>
+</div>
+
+<canvas id="gameCanvas"></canvas>
 
 <div id="controls">
     <button id="riddleBtn" disabled>❓ Ask Riddle (-13.5 🍃)</button>
@@ -305,6 +353,7 @@
         if (mode === 'mobile') {
             document.body.classList.add('mobile-mode');
             document.getElementById('mobileControls').style.display = 'block';
+            document.getElementById('joystickContainer').style.display = 'block';
         }
         
         // Start the game
@@ -959,6 +1008,81 @@
     setupTouchButton('btnDown', 'down');
     setupTouchButton('btnLeft', 'left');
     setupTouchButton('btnRight', 'right');
+
+    // Joystick controls for camera rotation
+    const joystickContainer = document.getElementById('joystickContainer');
+    const joystickStick = document.getElementById('joystickStick');
+    let joystickActive = false;
+    let joystickCenterX = 0;
+    let joystickCenterY = 0;
+    const joystickRadius = 60; // Base radius
+    const stickRadius = 25; // Stick radius
+    
+    function handleJoystickStart(e) {
+        e.preventDefault();
+        joystickActive = true;
+        const rect = joystickContainer.getBoundingClientRect();
+        joystickCenterX = rect.left + rect.width / 2;
+        joystickCenterY = rect.top + rect.height / 2;
+    }
+    
+    function handleJoystickMove(e) {
+        if (!joystickActive) return;
+        e.preventDefault();
+        
+        const touch = e.touches ? e.touches[0] : e;
+        const deltaX = touch.clientX - joystickCenterX;
+        const deltaY = touch.clientY - joystickCenterY;
+        
+        // Calculate distance from center
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        const maxDistance = joystickRadius - stickRadius;
+        
+        // Constrain stick to base
+        let stickX = deltaX;
+        let stickY = deltaY;
+        
+        if (distance > maxDistance) {
+            const angle = Math.atan2(deltaY, deltaX);
+            stickX = Math.cos(angle) * maxDistance;
+            stickY = Math.sin(angle) * maxDistance;
+        }
+        
+        // Update stick position (offset by half stick size to center it)
+        joystickStick.style.left = (joystickRadius - stickRadius + stickX) + 'px';
+        joystickStick.style.top = (joystickRadius - stickRadius + stickY) + 'px';
+        
+        // Update camera angle based on X position (-1 to 1)
+        const normalizedX = stickX / maxDistance;
+        targetMouseX = normalizedX;
+    }
+    
+    function handleJoystickEnd(e) {
+        e.preventDefault();
+        joystickActive = false;
+        
+        // Return stick to center with smooth transition
+        joystickStick.style.transition = 'all 0.2s ease';
+        joystickStick.style.left = '35px';
+        joystickStick.style.top = '35px';
+        
+        setTimeout(() => {
+            joystickStick.style.transition = 'none';
+        }, 200);
+    }
+    
+    // Touch events for joystick
+    joystickContainer.addEventListener('touchstart', handleJoystickStart, { passive: false });
+    joystickContainer.addEventListener('touchmove', handleJoystickMove, { passive: false });
+    joystickContainer.addEventListener('touchend', handleJoystickEnd, { passive: false });
+    joystickContainer.addEventListener('touchcancel', handleJoystickEnd, { passive: false });
+    
+    // Mouse events for desktop testing
+    joystickContainer.addEventListener('mousedown', handleJoystickStart);
+    document.addEventListener('mousemove', (e) => {
+        if (joystickActive) handleJoystickMove(e);
+    });
+    document.addEventListener('mouseup', handleJoystickEnd);
 
     // Animation loop
     let cameraAngle = 0;
