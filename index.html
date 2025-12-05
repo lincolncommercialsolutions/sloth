@@ -47,8 +47,17 @@
             display: none; position: fixed; top: 50%; left: 50%;
             transform: translate(-50%, -50%); background: rgba(30,50,30,0.98);
             padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            z-index: 100; max-width: 600px; text-align: center; color: #e8f5e9;
-            border: 3px solid #8BC34A;
+            z-index: 100; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;
+            text-align: center; color: #e8f5e9; border: 3px solid #8BC34A;
+        }
+        #modalTitle {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        #modalText {
+            font-size: 18px;
+            line-height: 1.4;
+            margin: 20px 0;
         }
         .answer-btn {
             display: block; width: 100%; margin: 12px 0; padding: 16px;
@@ -60,14 +69,15 @@
         /* Mobile control button styles */
         .mobile-btn-active {
             background: rgba(76,175,80,1) !important;
-            transform: scale(0.9) !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.7) !important;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.5) !important;
+            border-color: rgba(139,195,74,1) !important;
         }
         
         #mobileControls {
             touch-action: none;
             -webkit-user-select: none;
             user-select: none;
+            pointer-events: auto;
         }
         
         #mobileControls button {
@@ -76,6 +86,7 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             transition: all 0.1s ease;
+            pointer-events: auto;
         }
         
         /* Start screen */
@@ -167,7 +178,12 @@
         }
         
         body.mobile-mode #instructions {
-            display: none; /* Hide instructions in mobile mode to save space */
+            font-size: 10px;
+            padding: 8px;
+            top: 10px;
+            right: 10px;
+            max-width: 120px;
+            line-height: 1.3;
         }
         
         body.mobile-mode #controls button {
@@ -178,6 +194,34 @@
         
         body.mobile-mode #riddleBtn {
             padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        /* Mobile modal adjustments */
+        body.mobile-mode #modal {
+            padding: 20px;
+            width: 85%;
+            max-height: 80vh;
+        }
+        
+        body.mobile-mode #modalTitle {
+            font-size: 18px;
+        }
+        
+        body.mobile-mode #modalText {
+            font-size: 14px;
+            line-height: 1.3;
+            margin: 15px 0;
+        }
+        
+        body.mobile-mode .answer-btn {
+            padding: 12px;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        
+        body.mobile-mode #closeModal {
+            padding: 10px 20px;
             font-size: 14px;
         }
     </style>
@@ -211,13 +255,12 @@
     Collect floating leaves. Each leaf = 0.5🍃. Get 13.5+ to talk to the sloth!
 </div>
 
-<div id="mobileControls" style="display: none; position: fixed; bottom: 30px; left: 30px; z-index: 20;">
-    <div style="position: relative; width: 200px; height: 200px;">
-        <button id="btnUp" style="position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(46,125,50,0.9); color: white; border: 3px solid rgba(255,255,255,0.8); font-size: 26px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-weight: bold;">▲</button>
-        <button id="btnDown" style="position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(46,125,50,0.9); color: white; border: 3px solid rgba(255,255,255,0.8); font-size: 26px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-weight: bold;">▼</button>
-        <button id="btnLeft" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(46,125,50,0.9); color: white; border: 3px solid rgba(255,255,255,0.8); font-size: 26px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-weight: bold;">◄</button>
-        <button id="btnRight" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(46,125,50,0.9); color: white; border: 3px solid rgba(255,255,255,0.8); font-size: 26px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-weight: bold;">►</button>
-        <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 35px; height: 35px; border-radius: 50%; background: rgba(46,125,50,0.5); border: 2px solid rgba(255,255,255,0.4);"></div>
+<div id="mobileControls" style="display: none; position: fixed; bottom: 20px; left: 20px; z-index: 20;">
+    <div style="position: relative; width: 180px; height: 180px;">
+        <button id="btnUp" style="position: absolute; left: 60px; top: 0; width: 60px; height: 60px; background: rgba(46,125,50,0.8); color: white; border: 2px solid rgba(255,255,255,0.6); font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); font-weight: bold; border-radius: 8px;">▲</button>
+        <button id="btnDown" style="position: absolute; left: 60px; bottom: 0; width: 60px; height: 60px; background: rgba(46,125,50,0.8); color: white; border: 2px solid rgba(255,255,255,0.6); font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); font-weight: bold; border-radius: 8px;">▼</button>
+        <button id="btnLeft" style="position: absolute; left: 0; top: 60px; width: 60px; height: 60px; background: rgba(46,125,50,0.8); color: white; border: 2px solid rgba(255,255,255,0.6); font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); font-weight: bold; border-radius: 8px;">◄</button>
+        <button id="btnRight" style="position: absolute; right: 0; top: 60px; width: 60px; height: 60px; background: rgba(46,125,50,0.8); color: white; border: 2px solid rgba(255,255,255,0.6); font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); font-weight: bold; border-radius: 8px;">►</button>
     </div>
 </div><canvas id="gameCanvas"></canvas>
 
@@ -701,7 +744,8 @@
         { q: "I am the heaviest of all crowns, yet ninety-one seconds is all it took to make me fall from my throne. Who am I?", a: ["Salman bin Abdulaziz Al Saud","El Rey de los Gansos","King George V","Michael Spinks"], c: 3 },
         { q: "I built a wonder that touched the sky before the great pyramids rose, Physician, sage, and architect—later gods would wear my clothes. In mortar, stone, and healing arts the ancients saw my spark, Who am I, deified in time, though mortal at the start?", a: ["Djoser","Imhotep","Ptahhotep","Khufu"], c: 1 },
         { q: "We are tombs that never held the kings they were meant to keep, Older sisters stand as steps, while younger ones cleanly leap. Millions of blocks, a nation's might, aligned to stars above, What are we, the ancient world's most famous monuments of love?", a: ["Ziggurats","Mastabas","Pyramids","Obelisks"], c: 2 },
-        { q: "I split between two trucks while the world held its breath, From Monaco's streets I kicked my way to action-movie death. Muscles from Brussels, timeless ham, the 'Frank Dux' of fame, Who am I, the dancing fighter with the nearly unpronounceable name?", a: ["Steven Seagal","Jean-Claude Van Damme","Dolph Lundgren","Chuck Norris"], c: 1 }
+        { q: "I split between two trucks while the world held its breath, From Monaco's streets I kicked my way to action-movie death. Muscles from Brussels, timeless ham, the 'Frank Dux' of fame, Who am I, the dancing fighter with the nearly unpronounceable name?", a: ["Steven Seagal","Jean-Claude Van Damme","Dolph Lundgren","Chuck Norris"], c: 1 },
+        { q: "I am the number of sins a Tibetan mala helps you outrun, The beads you count when seeking peace beneath the rising sun. In the cosmos, Earth and Moon and Sun align with me in play, Stitched in saris, struck in cricket, chanted when you pray. What number am I, sacred from the Himalayas to the stars?", a: ["100","111","108","99"], c: 2 }
     ];
 
     let currentRiddle = null;
