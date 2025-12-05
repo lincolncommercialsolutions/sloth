@@ -18,19 +18,19 @@
         }
         #gameCanvas { display: block; }
         #ui {
-            position: absolute; top: 10px; left: 10px; color: #e8f5e9;
+            position: absolute; top: 10px; left: 20px; color: #e8f5e9;
             font-size: 28px; font-weight: bold; text-shadow: 0 0 10px rgba(0,0,0,0.8);
             z-index: 10; background: rgba(0,0,0,0.4); padding: 15px 25px; border-radius: 15px;
             border: 2px solid rgba(100,150,100,0.6);
         }
         #stats {
-            position: absolute; top: 80px; left: 10px; color: #e8f5e9;
+            position: absolute; top: 80px; left: 20px; color: #e8f5e9;
             font-size: 16px; text-shadow: 0 0 10px rgba(0,0,0,0.8);
             z-index: 10; background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 10px;
             border: 2px solid rgba(100,150,100,0.4);
         }
         #instructions {
-            position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5);
+            position: absolute; top: 10px; right: 20px; background: rgba(0,0,0,0.5);
             color: #e8f5e9; padding: 15px; border-radius: 10px; font-size: 15px; max-width: 280px;
             border-left: 4px solid #8BC34A;
         }
@@ -213,21 +213,21 @@
             font-size: 16px;
             padding: 6px 12px;
             top: 5px;
-            left: 5px;
+            left: 10px;
         }
         
         body.mobile-mode #stats {
             font-size: 11px;
             padding: 5px 10px;
             top: 45px;
-            left: 5px;
+            left: 10px;
         }
         
         body.mobile-mode #instructions {
             font-size: 9px;
             padding: 6px;
             top: 5px;
-            right: 5px;
+            right: 10px;
             max-width: 100px;
             line-height: 1.2;
         }
@@ -305,7 +305,7 @@
     Collect floating leaves. Each leaf = 0.5🍃. Get 13.5+ to talk to the sloth!
 </div>
 
-<div id="mobileControls" style="display: none; position: fixed; bottom: 10px; left: 10px; z-index: 20;">
+<div id="mobileControls" style="display: none; position: fixed; bottom: 10px; left: 20px; z-index: 20;">
     <div style="position: relative; width: 180px; height: 180px;">
         <button id="btnUp" style="position: absolute; left: 60px; top: 0; width: 60px; height: 60px; background: rgba(46,125,50,0.8); color: white; border: 2px solid rgba(255,255,255,0.6); font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); font-weight: bold; border-radius: 8px;">▲</button>
         <button id="btnDown" style="position: absolute; left: 60px; bottom: 0; width: 60px; height: 60px; background: rgba(46,125,50,0.8); color: white; border: 2px solid rgba(255,255,255,0.6); font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); font-weight: bold; border-radius: 8px;">▼</button>
@@ -1098,6 +1098,7 @@
         updateMousePosition();
 
         const speed = 0.18;
+        const mobileSpeed = 0.25; // Faster speed for mobile
         const move = new THREE.Vector3();
         
         // Update camera angle: mouse right = look right (positive angle)
@@ -1121,22 +1122,22 @@
             move.z -= Math.sin(cameraAngle) * speed;
         }
         
-        // Mobile touch controls: camera-relative directions (same as WASD)
+        // Mobile touch controls: camera-relative directions (same as WASD) with faster speed
         if (touchKeys.up) {
-            move.x -= Math.sin(cameraAngle) * speed;
-            move.z -= Math.cos(cameraAngle) * speed;
+            move.x -= Math.sin(cameraAngle) * mobileSpeed;
+            move.z -= Math.cos(cameraAngle) * mobileSpeed;
         }
         if (touchKeys.down) {
-            move.x += Math.sin(cameraAngle) * speed;
-            move.z += Math.cos(cameraAngle) * speed;
+            move.x += Math.sin(cameraAngle) * mobileSpeed;
+            move.z += Math.cos(cameraAngle) * mobileSpeed;
         }
         if (touchKeys.left) {
-            move.x -= Math.cos(cameraAngle) * speed;
-            move.z += Math.sin(cameraAngle) * speed;
+            move.x -= Math.cos(cameraAngle) * mobileSpeed;
+            move.z += Math.sin(cameraAngle) * mobileSpeed;
         }
         if (touchKeys.right) {
-            move.x += Math.cos(cameraAngle) * speed;
-            move.z -= Math.sin(cameraAngle) * speed;
+            move.x += Math.cos(cameraAngle) * mobileSpeed;
+            move.z -= Math.sin(cameraAngle) * mobileSpeed;
         }
         
         player.position.add(move);
