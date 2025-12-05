@@ -94,47 +94,6 @@
             transform-origin: bottom left;
         }
         
-        /* Joystick styles */
-        #joystickContainer {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            width: 120px;
-            height: 120px;
-            z-index: 20;
-            touch-action: none;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-        
-        #joystickBase {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            background: rgba(46,125,50,0.4);
-            border: 3px solid rgba(255,255,255,0.4);
-            border-radius: 50%;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-        }
-        
-        #joystickStick {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: rgba(76,175,80,0.9);
-            border: 3px solid rgba(255,255,255,0.8);
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-            left: 35px;
-            top: 35px;
-            transition: none;
-        }
-        
-        body.mobile-mode #joystickContainer {
-            transform: scale(0.8);
-            transform-origin: bottom right;
-        }
-        
         /* Start screen */
         #startScreen {
             position: fixed;
@@ -287,7 +246,7 @@
     </div>
 </div>
 
-<div id="ui">🍃 Leaves: <span id="leafCount">0.00</span></div>
+<div id="ui">🧀 Cheese: <span id="leafCount">0.00</span></div>
 
 <div id="stats">
     📍 Position: <span id="posDisplay">0, 0</span><br>
@@ -302,7 +261,7 @@
     A — Left<br>
     D — Right<br>
     Mouse — Look around<br><br>
-    Collect floating leaves. Each leaf = 0.5🍃. Get 13.5+ to talk to the sloth!
+    Collect floating cheese. Each cheese = 0.5🧀. Get 13.5+ to talk to the sloth!
 </div>
 
 <div id="mobileControls" style="display: none; position: fixed; bottom: 10px; left: 20px; z-index: 20;">
@@ -314,15 +273,10 @@
     </div>
 </div>
 
-<div id="joystickContainer" style="display: none;">
-    <div id="joystickBase"></div>
-    <div id="joystickStick"></div>
-</div>
-
 <canvas id="gameCanvas"></canvas>
 
 <div id="controls">
-    <button id="riddleBtn" disabled>❓ Ask Riddle (-13.5 🍃)</button>
+    <button id="riddleBtn" disabled>❓ Ask Riddle (-13.5 🧀)</button>
 </div>
 
 <div id="modal">
@@ -357,7 +311,6 @@
         if (mode === 'mobile') {
             document.body.classList.add('mobile-mode');
             document.getElementById('mobileControls').style.display = 'block';
-            document.getElementById('joystickContainer').style.display = 'block';
         }
         
         // Start the game
@@ -719,36 +672,27 @@
         scene.add(foliage);
     }
 
-    // Realistic leaves (yellow color)
-    const leafMaterial = new THREE.MeshStandardMaterial({
-        color: 0xFFEB3B,
-        transparent: true,
-        side: THREE.DoubleSide,
-        opacity: 0.95,
-        roughness: 0.8,
+    // Cheese pieces (yellow/orange color)
+    const cheeseMaterial = new THREE.MeshStandardMaterial({
+        color: 0xFFD700,
+        transparent: false,
+        roughness: 0.7,
         metalness: 0.1,
-        emissive: 0xFDD835,
-        emissiveIntensity: 0.4
+        emissive: 0xFFA500,
+        emissiveIntensity: 0.3
     });
 
     const leaves = [];
     function createRealisticLeaf(x, z) {
-        // Create leaf shape
-        const leafShape = new THREE.Shape();
-        leafShape.moveTo(0, 0);
-        leafShape.quadraticCurveTo(0.4, 0.3, 0.5, 0.6);
-        leafShape.quadraticCurveTo(0.3, 0.8, 0, 1);
-        leafShape.quadraticCurveTo(-0.3, 0.8, -0.5, 0.6);
-        leafShape.quadraticCurveTo(-0.4, 0.3, 0, 0);
-        
-        const leafGeometry = new THREE.ShapeGeometry(leafShape);
-        const leaf = new THREE.Mesh(leafGeometry, leafMaterial);
+        // Create cheese wedge shape
+        const cheeseGeometry = new THREE.ConeGeometry(0.4, 0.6, 6);
+        const leaf = new THREE.Mesh(cheeseGeometry, cheeseMaterial);
         
         leaf.position.set(x, 0.6 + Math.random() * 0.4, z);
         leaf.rotation.set(
-            Math.random() * Math.PI * 0.3 - Math.PI * 0.15,
+            Math.random() * Math.PI * 0.3,
             Math.random() * Math.PI * 2,
-            Math.random() * Math.PI * 0.3 - Math.PI * 0.15
+            Math.random() * Math.PI * 0.3
         );
         leaf.castShadow = true;
         leaf.userData = { 
@@ -759,14 +703,14 @@
         leaves.push(leaf);
     }
 
-    // Spawn leaves
+    // Spawn cheese
     for (let i = 0; i < 30; i++) {
         const angle = Math.random() * Math.PI * 2;
         const dist = 10 + Math.random() * 60;
         createRealisticLeaf(Math.cos(angle) * dist, Math.sin(angle) * dist);
     }
 
-    // Falling leaves effect
+    // Falling cheese effect
     setInterval(() => {
         if (Math.random() < 0.5 && leaves.length < 50) {
             const angle = Math.random() * Math.PI * 2;
@@ -832,9 +776,9 @@
             
             showModal("🦥 Riddle of the Ancients", currentRiddle.q, true, currentRiddle);
             updateUI();
-            console.log("Riddle asked! Leaves remaining:", leafCount);
+            console.log("Riddle asked! Cheese remaining:", leafCount);
         } else {
-            showModal("🦥 Not Enough Leaves", "The sloth slowly shakes its head... You need at least 13.5 leaves to ask a riddle.", false);
+            showModal("🦥 Not Enough Cheese", "The sloth slowly shakes its head... You need at least 13.5 cheese to ask a riddle.", false);
         }
     };
 
@@ -852,10 +796,10 @@
                 b.onclick = () => {
                     if (i === data.c) {
                         leafCount += 6.75;
-                        showModal("Correct! 🌟", "The sloth nods approvingly. +6.75 leaves!");
+                        showModal("Correct! 🌟", "The sloth nods approvingly. +6.75 cheese!");
                     } else {
                         leafCount = Math.max(0, leafCount - 20);
-                        showModal("Wrong...", "The sloth looks disappointed. -20 leaves.");
+                        showModal("Wrong...", "The sloth looks disappointed. -20 cheese.");
                     }
                     updateUI();
                 };
@@ -900,35 +844,30 @@
         targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
     });
 
-    // Touch swipe for camera rotation (mobile)
+    // Touch swipe for camera rotation (mobile) - high sensitivity, anywhere on screen
     let touchStartX = 0;
     let isSwiping = false;
     
-    canvas.addEventListener('touchstart', (e) => {
+    document.addEventListener('touchstart', (e) => {
         // Only track swipes outside the control buttons
-        const touch = e.touches[0];
         const controlsElement = document.getElementById('mobileControls');
         if (controlsElement && controlsElement.contains(e.target)) {
             return; // Ignore touches on control buttons
         }
         
+        const touch = e.touches[0];
         touchStartX = touch.clientX;
         isSwiping = true;
     }, { passive: true });
     
-    canvas.addEventListener('touchmove', (e) => {
+    document.addEventListener('touchmove', (e) => {
         if (!isSwiping) return;
         
         const touch = e.touches[0];
         const deltaX = touch.clientX - touchStartX;
         
-        // Update camera based on swipe (adjust sensitivity)
-        if (gameMode === 'mobile') {
-            // For mobile landscape mode, adjust for rotated screen
-            targetMouseX += deltaX * 0.003;
-        } else {
-            targetMouseX += deltaX * 0.002;
-        }
+        // High sensitivity for camera rotation
+        targetMouseX += deltaX * 0.008;
         
         // Clamp the value between -1 and 1
         targetMouseX = Math.max(-1, Math.min(1, targetMouseX));
@@ -936,11 +875,11 @@
         touchStartX = touch.clientX;
     }, { passive: true });
     
-    canvas.addEventListener('touchend', () => {
+    document.addEventListener('touchend', () => {
         isSwiping = false;
     }, { passive: true });
     
-    canvas.addEventListener('touchcancel', () => {
+    document.addEventListener('touchcancel', () => {
         isSwiping = false;
     }, { passive: true });
 
@@ -1013,80 +952,11 @@
     setupTouchButton('btnLeft', 'left');
     setupTouchButton('btnRight', 'right');
 
-    // Joystick controls for camera rotation
-    const joystickContainer = document.getElementById('joystickContainer');
-    const joystickStick = document.getElementById('joystickStick');
-    let joystickActive = false;
-    let joystickCenterX = 0;
-    let joystickCenterY = 0;
-    const joystickRadius = 60; // Base radius
-    const stickRadius = 25; // Stick radius
-    
-    function handleJoystickStart(e) {
-        e.preventDefault();
-        joystickActive = true;
-        const rect = joystickContainer.getBoundingClientRect();
-        joystickCenterX = rect.left + rect.width / 2;
-        joystickCenterY = rect.top + rect.height / 2;
-    }
-    
-    function handleJoystickMove(e) {
-        if (!joystickActive) return;
-        e.preventDefault();
-        
-        const touch = e.touches ? e.touches[0] : e;
-        const deltaX = touch.clientX - joystickCenterX;
-        const deltaY = touch.clientY - joystickCenterY;
-        
-        // Calculate distance from center
-        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        const maxDistance = joystickRadius - stickRadius;
-        
-        // Constrain stick to base
-        let stickX = deltaX;
-        let stickY = deltaY;
-        
-        if (distance > maxDistance) {
-            const angle = Math.atan2(deltaY, deltaX);
-            stickX = Math.cos(angle) * maxDistance;
-            stickY = Math.sin(angle) * maxDistance;
-        }
-        
-        // Update stick position (offset by half stick size to center it)
-        joystickStick.style.left = (joystickRadius - stickRadius + stickX) + 'px';
-        joystickStick.style.top = (joystickRadius - stickRadius + stickY) + 'px';
-        
-        // Update camera angle based on X position (-1 to 1)
-        const normalizedX = stickX / maxDistance;
-        targetMouseX = normalizedX;
-    }
-    
-    function handleJoystickEnd(e) {
-        e.preventDefault();
-        joystickActive = false;
-        
-        // Return stick to center with smooth transition
-        joystickStick.style.transition = 'all 0.2s ease';
-        joystickStick.style.left = '35px';
-        joystickStick.style.top = '35px';
-        
-        setTimeout(() => {
-            joystickStick.style.transition = 'none';
-        }, 200);
-    }
-    
-    // Touch events for joystick
-    joystickContainer.addEventListener('touchstart', handleJoystickStart, { passive: false });
-    joystickContainer.addEventListener('touchmove', handleJoystickMove, { passive: false });
-    joystickContainer.addEventListener('touchend', handleJoystickEnd, { passive: false });
-    joystickContainer.addEventListener('touchcancel', handleJoystickEnd, { passive: false });
-    
-    // Mouse events for desktop testing
-    joystickContainer.addEventListener('mousedown', handleJoystickStart);
-    document.addEventListener('mousemove', (e) => {
-        if (joystickActive) handleJoystickMove(e);
-    });
-    document.addEventListener('mouseup', handleJoystickEnd);
+    // Sloth movement variables
+    let slothWanderAngle = Math.random() * Math.PI * 2;
+    let slothWanderTimer = 0;
+    const slothSpeed = 0.015; // Slow movement
+    const slothWanderChangeInterval = 180; // Change direction every ~3 seconds at 60fps
 
     // Animation loop
     let cameraAngle = 0;
@@ -1142,7 +1012,7 @@
         
         player.position.add(move);
 
-        // Floating & rotating leaves
+        // Floating & rotating cheese
         leaves.forEach((leaf, i) => {
             leaf.rotation.y += leaf.userData.rotSpeed;
             leaf.rotation.z += 0.005;
@@ -1152,7 +1022,7 @@
             if (distance < 1.2) {
                 scene.remove(leaf);
                 leaves.splice(i, 1);
-                leafCount += 0.5;  // Each leaf is worth 0.5
+                leafCount += 0.5;  // Each cheese is worth 0.5
                 totalCollected += 1;
                 updateUI();
 
@@ -1160,7 +1030,7 @@
                 for (let j = 0; j < 5; j++) {
                     const particle = new THREE.Mesh(
                         new THREE.SphereGeometry(0.05),
-                        new THREE.MeshBasicMaterial({ color: 0xFFEB3B })
+                        new THREE.MeshBasicMaterial({ color: 0xFFD700 })
                     );
                     particle.position.copy(leaf.position);
                     particle.userData.velocity = new THREE.Vector3(
@@ -1189,10 +1059,33 @@
         const distToSloth = Math.sqrt(player.position.x ** 2 + player.position.z ** 2);
         distDisplay.textContent = Math.round(distToSloth);
 
-        // Gentle sloth animation (tree sloth)
+        // Tree sloth wandering around the map slowly
         if (sloth) {
+            // Wandering logic
+            slothWanderTimer++;
+            if (slothWanderTimer > slothWanderChangeInterval) {
+                // Change direction
+                slothWanderAngle = Math.random() * Math.PI * 2;
+                slothWanderTimer = 0;
+            }
+            
+            // Move sloth
+            sloth.position.x += Math.cos(slothWanderAngle) * slothSpeed;
+            sloth.position.z += Math.sin(slothWanderAngle) * slothSpeed;
+            
+            // Keep sloth within bounds
+            const maxDist = 70;
+            const distFromCenter = Math.sqrt(sloth.position.x ** 2 + sloth.position.z ** 2);
+            if (distFromCenter > maxDist) {
+                // Turn back toward center
+                slothWanderAngle = Math.atan2(-sloth.position.z, -sloth.position.x);
+            }
+            
+            // Gentle floating animation
             sloth.position.y = Math.sin(Date.now() * 0.0005) * 0.15;
-            sloth.rotation.y = Math.sin(Date.now() * 0.0003) * 0.1;
+            
+            // Rotate sloth to face movement direction
+            sloth.rotation.y = slothWanderAngle + Math.PI / 2;
         }
 
         // Animate ground sloth - subtle breathing and blinking
