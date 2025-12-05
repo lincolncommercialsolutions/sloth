@@ -686,7 +686,7 @@
     const riddleBtn = document.getElementById('riddleBtn');
 
     const riddles = [
-        { q: "Strange balls roll through the forest, neither sports nor toys. What power do these mysterious spheres hold?", a: ["Bouncy Balls","Bowling Balls","Crystal Balls","Blue Balls"], c: 3 },
+        { q: "They're not for playing catch, not for rolling strikes. When frustration peaks and hope retreats, what spheres describe your plight?", a: ["Bouncy Balls","Bowling Balls","Crystal Balls","Blue Balls"], c: 3 },
         { q: "Billie Jean is not my lover, but she dances in moonlight. Who walks backwards while moving forward?", a: ["Michael Jackson","A Moonwalker","The King of Pop","Time Traveler"], c: 2 },
         { q: "A tiger prowls beyond the boundaries, where maps end and legends begin. What beast guards the edge of reality?", a: ["The Guardian Tiger","A Map Error","The Border Beast","meow"], c: 3 },
         { q: "Frogs neither hop nor swim here, yet they croak with wisdom. What amphibian truth lies beneath?", a: ["Ancient Knowledge","Pepe Memes","Frog Philosophy","Hop"], c: 3 },
@@ -698,15 +698,36 @@
         { q: "Time flows yet stands still. We chase it but can never catch it. What is time but an illusion?", a: ["A Construct","Time Itself","A River","What We Make Of It"], c: 3 },
         { q: "I have keys but cant open doors, and when I breathe, music pours What am I?", a: ["A Piano","A Kazoo","An Accordion","A Broken Flute"], c: 2 },
         { q: "ANGELZ watch from above, neither heaven nor earth. Where do the watchers dwell?", a: ["The Upside Down","The Clouds","Our Hearts","The Shadows"], c: 1 },
-        { q: "I am the heaviest of all crowns, yet ninety-one seconds is all it took to make me fall from my throne. Who am I?", a: ["Salman bin Abdulaziz Al Saud","El Rey de los Gansos","King George V","Michael Spinks"], c: 3 }
+        { q: "I am the heaviest of all crowns, yet ninety-one seconds is all it took to make me fall from my throne. Who am I?", a: ["Salman bin Abdulaziz Al Saud","El Rey de los Gansos","King George V","Michael Spinks"], c: 3 },
+        { q: "I built a wonder that touched the sky before the great pyramids rose, Physician, sage, and architect—later gods would wear my clothes. In mortar, stone, and healing arts the ancients saw my spark, Who am I, deified in time, though mortal at the start?", a: ["Djoser","Imhotep","Ptahhotep","Khufu"], c: 1 },
+        { q: "We are tombs that never held the kings they were meant to keep, Older sisters stand as steps, while younger ones cleanly leap. Millions of blocks, a nation's might, aligned to stars above, What are we, the ancient world's most famous monuments of love?", a: ["Ziggurats","Mastabas","Pyramids","Obelisks"], c: 2 },
+        { q: "I split between two trucks while the world held its breath, From Monaco's streets I kicked my way to action-movie death. Muscles from Brussels, timeless ham, the 'Frank Dux' of fame, Who am I, the dancing fighter with the nearly unpronounceable name?", a: ["Steven Seagal","Jean-Claude Van Damme","Dolph Lundgren","Chuck Norris"], c: 1 }
     ];
 
     let currentRiddle = null;
+    let askedRiddles = []; // Track which riddles have been asked
 
     document.getElementById('riddleBtn').onclick = () => {
         if (leafCount >= 13.5) {
             leafCount -= 13.5;
-            currentRiddle = riddles[Math.floor(Math.random() * riddles.length)];
+            
+            // Get available riddles (not yet asked)
+            const availableRiddles = riddles.filter((r, index) => !askedRiddles.includes(index));
+            
+            // If all riddles have been asked, reset the list
+            if (availableRiddles.length === 0) {
+                askedRiddles = [];
+                availableRiddles.push(...riddles);
+            }
+            
+            // Pick a random riddle from available ones
+            const randomIndex = Math.floor(Math.random() * availableRiddles.length);
+            currentRiddle = availableRiddles[randomIndex];
+            
+            // Mark this riddle as asked
+            const originalIndex = riddles.indexOf(currentRiddle);
+            askedRiddles.push(originalIndex);
+            
             showModal("🦥 Riddle of the Ancients", currentRiddle.q, true, currentRiddle);
             updateUI();
             console.log("Riddle asked! Leaves remaining:", leafCount);
