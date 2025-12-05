@@ -619,18 +619,19 @@
     const riddleBtn = document.getElementById('riddleBtn');
 
     const riddles = [
-        { q: "Strange balls roll through the forest, neither sports nor toys. What power do these mysterious spheres hold?", a: ["Energy Orbs","Bowling Balls","Crystal Balls","Dragon Balls"], c: 0 },
-        { q: "Billie Jean is not my lover, but she dances in moonlight. Who walks backwards while moving forward?", a: ["Michael Jackson","A Moonwalker","The King of Pop","Time Traveler"], c: 0 },
-        { q: "A tiger prowls beyond the boundaries, where maps end and legends begin. What beast guards the edge of reality?", a: ["The Guardian Tiger","A Map Error","The Border Beast","The Edge Walker"], c: 0 },
-        { q: "Frogs neither hop nor swim here, yet they croak with wisdom. What amphibian truth lies beneath?", a: ["Ancient Knowledge","Pepe Memes","Frog Philosophy","Wednesday Feelings"], c: 0 },
-        { q: "Bread rises not from ovens but from meaning. What sustenance feeds the soul?", a: ["Money/Dough","Spiritual Bread","Life's Purpose","Daily Bread"], c: 0 },
-        { q: "In the 90s, a man flew without wings, wore 23, and conquered courts. Who defied gravity?", a: ["Michael Jordan","Air Jordan","MJ","The GOAT"], c: 0 },
-        { q: "A man of iron with a heart of light. What armor protects the vulnerable within?", a: ["Iron Man","Tony Stark","The Arc Reactor","Courage"], c: 1 },
+        { q: "Strange balls roll through the forest, neither sports nor toys. What power do these mysterious spheres hold?", a: ["Bouncy Balls","Bowling Balls","Crystal Balls","Blue Balls"], c: 3 },
+        { q: "Billie Jean is not my lover, but she dances in moonlight. Who walks backwards while moving forward?", a: ["Michael Jackson","A Moonwalker","The King of Pop","Time Traveler"], c: 2 },
+        { q: "A tiger prowls beyond the boundaries, where maps end and legends begin. What beast guards the edge of reality?", a: ["The Guardian Tiger","A Map Error","The Border Beast","meow"], c: 3 },
+        { q: "Frogs neither hop nor swim here, yet they croak with wisdom. What amphibian truth lies beneath?", a: ["Ancient Knowledge","Pepe Memes","Frog Philosophy","Hop"], c: 3 },
+        { q: "Bread rises not from ovens but from meaning. What sustenance feeds the soul?", a: ["Money/Dough","Bird Bread","Burnt Toast","French Bread"], c: 3 },
+        { q: "In the 90s, a man flew without wings, wore 23, and conquered courts. Who defied gravity?", a: ["Michael Jordan","Air Jordan","MJ","The GOAT"], c: 2 },
+        { q: "A man of iron with a heart of light. What armor protects the vulnerable within?", a: ["Ego","Pepper","Jar","Pot"], c: 2 },
         { q: "Cards shuffle in Queens NYC, faces hide truths, chips stack like towers. What game mirrors life's bluff?", a: ["Life's Gamble","Poker","Street Games","The Hustle"], c: 1 },
-        { q: "The number 254 whispers through dimensions. What code unlocks the hidden realm?", a: ["A Portal Code","Area Code","The Answer","A Secret Number"], c: 2 },
-        { q: "Time flows yet stands still. We chase it but can never catch it. What is time but an illusion?", a: ["A Construct","Time Itself","A River","An Illusion"], c: 3 },
-        { q: "Clocks tick backwards in dreams, forwards in nightmares. When do they tell the truth?", a: ["Never","Always","At Midnight","In The Present"], c: 0 },
-        { q: "ANGELZ watch from above, neither heaven nor earth. Where do the watchers dwell?", a: ["In Between","The Clouds","Our Hearts","The Shadows"], c: 0 }
+        { q: "The number 254 whispers through dimensions. What code unlocks the hidden realm?", a: ["A Portal Code","ASCII","The Answer","A Secret Number"], c: 1 },
+        { q: "Time flows yet stands still. We chase it but can never catch it. What is time but an illusion?", a: ["A Construct","Time Itself","A River","What We Make Of It"], c: 3 },
+        { q: "I have keys but cant open doors, and when I breathe, music pours What am I?", a: ["A Piano","A Kazoo","An Accordion","A Broken Flute"], c: 2 },
+        { q: "ANGELZ watch from above, neither heaven nor earth. Where do the watchers dwell?", a: ["The Upside Down","The Clouds","Our Hearts","The Shadows"], c: 1 },
+        { q: "I am the heaviest of all crowns, yet ninety-one seconds is all it took to make me fall from my throne. Who am I?", a: ["Salman bin Abdulaziz Al Saud","El Rey de los Gansos","King George V","Michael Spinks"], c: 3 }
     ];
 
     let currentRiddle = null;
@@ -660,8 +661,8 @@
                 b.textContent = ans;
                 b.onclick = () => {
                     if (i === data.c) {
-                        leafCount += 15;
-                        showModal("Correct! 🌟", "The sloth nods approvingly. +15 leaves!");
+                        leafCount += 6.75;
+                        showModal("Correct! 🌟", "The sloth nods approvingly. +6.75 leaves!");
                     } else {
                         leafCount = Math.max(0, leafCount - 20);
                         showModal("Wrong...", "The sloth looks disappointed. -20 leaves.");
