@@ -89,6 +89,11 @@
             pointer-events: auto;
         }
         
+        #mobileControls {
+            transform: scale(0.7);
+            transform-origin: bottom left;
+        }
+        
         /* Start screen */
         #startScreen {
             position: fixed;
@@ -988,18 +993,22 @@
             move.z -= Math.sin(cameraAngle) * speed;
         }
         
-        // Mobile touch controls: absolute directions (up=forward/north, down=back/south, etc.)
+        // Mobile touch controls: camera-relative directions (same as WASD)
         if (touchKeys.up) {
-            move.z -= speed;  // Forward (north)
+            move.x -= Math.sin(cameraAngle) * speed;
+            move.z -= Math.cos(cameraAngle) * speed;
         }
         if (touchKeys.down) {
-            move.z += speed;  // Backward (south)
+            move.x += Math.sin(cameraAngle) * speed;
+            move.z += Math.cos(cameraAngle) * speed;
         }
         if (touchKeys.left) {
-            move.x -= speed;  // Left (west)
+            move.x -= Math.cos(cameraAngle) * speed;
+            move.z += Math.sin(cameraAngle) * speed;
         }
         if (touchKeys.right) {
-            move.x += speed;  // Right (east)
+            move.x += Math.cos(cameraAngle) * speed;
+            move.z -= Math.sin(cameraAngle) * speed;
         }
         
         player.position.add(move);
