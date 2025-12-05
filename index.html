@@ -173,7 +173,6 @@
 </div><canvas id="gameCanvas"></canvas>
 
 <div id="controls">
-    <button id="hintBtn" disabled>💡 Hint from Sloth (-13.5 🍃)</button>
     <button id="riddleBtn" disabled>❓ Ask Riddle (-13.5 🍃)</button>
 </div>
 
@@ -617,21 +616,7 @@
     const leafCountEl = document.getElementById('leafCount');
     const posDisplay = document.getElementById('posDisplay');
     const distDisplay = document.getElementById('distDisplay');
-    const hintBtn = document.getElementById('hintBtn');
     const riddleBtn = document.getElementById('riddleBtn');
-
-    const hints = [
-        "The sloth whispers: 'Strange balls of energy drift where reality bends...'",
-        "It yawns: 'The tiger at the map's edge knows secrets beyond the border...'",
-        "A sleepy smile: 'ANGELZ see what mortals cannot... look between the shadows.'",
-        "The sloth stretches: 'In Queens, the cards know more than the players...'",
-        "A gentle whisper: '254 is not just a number... it's a doorway.'",
-        "The sloth blinks: 'Time and clocks lie to those who listen too closely...'",
-        "It mumbles: 'Billie Jean knew the truth about moonwalking through dimensions...'",
-        "A knowing gaze: 'Frogs croak the old ways... bread feeds more than the body.'",
-        "The sloth sighs: 'In the 90s, gravity was optional for those who believed...'",
-        "A cryptic smile: 'Iron hearts beat strongest when protected by purpose...'"
-    ];
 
     const riddles = [
         { q: "Strange balls roll through the forest, neither sports nor toys. What power do these mysterious spheres hold?", a: ["Energy Orbs","Bowling Balls","Crystal Balls","Dragon Balls"], c: 0 },
@@ -649,18 +634,6 @@
     ];
 
     let currentRiddle = null;
-
-    document.getElementById('hintBtn').onclick = () => {
-        if (leafCount >= 13.5) {
-            leafCount -= 13.5;
-            const randomHint = hints[Math.floor(Math.random() * hints.length)];
-            showModal("🦥 Sloth's Wisdom", randomHint, false);
-            updateUI();
-            console.log("Hint given! Leaves remaining:", leafCount);
-        } else {
-            showModal("🦥 Not Enough Leaves", "The sloth yawns sleepily... You need at least 13.5 leaves for a hint.", false);
-        }
-    };
 
     document.getElementById('riddleBtn').onclick = () => {
         if (leafCount >= 13.5) {
@@ -710,20 +683,10 @@
     function updateUI() {
         leafCountEl.textContent = leafCount.toFixed(2);
         const enoughForRiddle = leafCount >= 13.5;
-        const enoughForHint = leafCount >= 13.5;
         
-        hintBtn.disabled = !enoughForHint;
         riddleBtn.disabled = !enoughForRiddle;
         
         // Visual feedback
-        if (enoughForHint) {
-            hintBtn.style.opacity = '1';
-            hintBtn.style.cursor = 'pointer';
-        } else {
-            hintBtn.style.opacity = '0.5';
-            hintBtn.style.cursor = 'not-allowed';
-        }
-        
         if (enoughForRiddle) {
             riddleBtn.style.opacity = '1';
             riddleBtn.style.cursor = 'pointer';
