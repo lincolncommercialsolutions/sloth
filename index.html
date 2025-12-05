@@ -150,6 +150,36 @@
             width: 100vh;
             height: 100vw;
         }
+        
+        /* Smaller UI elements for mobile mode */
+        body.mobile-mode #ui {
+            font-size: 18px;
+            padding: 8px 15px;
+            top: 10px;
+            left: 10px;
+        }
+        
+        body.mobile-mode #stats {
+            font-size: 12px;
+            padding: 6px 12px;
+            top: 60px;
+            left: 10px;
+        }
+        
+        body.mobile-mode #instructions {
+            display: none; /* Hide instructions in mobile mode to save space */
+        }
+        
+        body.mobile-mode #controls button {
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 0 8px;
+        }
+        
+        body.mobile-mode #riddleBtn {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
