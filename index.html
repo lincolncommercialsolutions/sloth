@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sloth's Leaf Sanctuary - Realistic Edition</title>
+    <title>Sloth's Cheese Garden - Realistic Edition</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -238,7 +238,7 @@
 <body>
 
 <div id="startScreen">
-    <h1>🦥 Sloth's Leaf Sanctuary 🍃</h1>
+    <h1>🦥 Sloth's Cheese Garden 🧀</h1>
     <p>Welcome to the mystical forest! Choose your control mode to begin your journey.</p>
     <div>
         <button class="mode-btn" onclick="startGame('desktop')">🖥️ Desktop Mode</button>
@@ -254,14 +254,14 @@
 </div>
 
     <div id="instructions">
-    <strong>Sloth's Leaf Sanctuary</strong><br><br>
+    <strong>Sloth's Cheese Garden</strong><br><br>
     Controls:<br>
     W — Forward<br>
     S — Backward<br>
     A — Left<br>
     D — Right<br>
     Mouse — Look around<br><br>
-    Collect floating cheese. Each cheese = 0.5🧀. Get 13.5+ to talk to the sloth!
+    Collect floating cheese. Each cheese = 1🧀. Get 6.75+ to talk to the sloth!
 </div>
 
 <div id="mobileControls" style="display: none; position: fixed; bottom: 10px; left: 20px; z-index: 20;">
@@ -276,7 +276,7 @@
 <canvas id="gameCanvas"></canvas>
 
 <div id="controls">
-    <button id="riddleBtn" disabled>❓ Ask Riddle (-13.5 🧀)</button>
+    <button id="riddleBtn" disabled>❓ Ask Riddle (-6.75 🧀)</button>
 </div>
 
 <div id="modal">
@@ -754,8 +754,8 @@
     let askedRiddles = []; // Track which riddles have been asked
 
     document.getElementById('riddleBtn').onclick = () => {
-        if (leafCount >= 13.5) {
-            leafCount -= 13.5;
+        if (leafCount >= 6.75) {
+            leafCount -= 6.75;
             
             // Get available riddles (not yet asked)
             const availableRiddles = riddles.filter((r, index) => !askedRiddles.includes(index));
@@ -778,7 +778,7 @@
             updateUI();
             console.log("Riddle asked! Cheese remaining:", leafCount);
         } else {
-            showModal("🦥 Not Enough Cheese", "The sloth slowly shakes its head... You need at least 13.5 cheese to ask a riddle.", false);
+            showModal("🦥 Not Enough Cheese", "The sloth slowly shakes its head... You need at least 6.75 cheese to ask a riddle.", false);
         }
     };
 
@@ -795,8 +795,8 @@
                 b.textContent = ans;
                 b.onclick = () => {
                     if (i === data.c) {
-                        leafCount += 6.75;
-                        showModal("Correct! 🌟", "The sloth nods approvingly. +6.75 cheese!");
+                        leafCount += 3.375;
+                        showModal("Correct! 🌟", "The sloth nods approvingly. +3.375 cheese!");
                     } else {
                         leafCount = Math.max(0, leafCount - 20);
                         showModal("Wrong...", "The sloth looks disappointed. -20 cheese.");
@@ -817,7 +817,7 @@
 
     function updateUI() {
         leafCountEl.textContent = leafCount.toFixed(2);
-        const enoughForRiddle = leafCount >= 13.5;
+        const enoughForRiddle = leafCount >= 6.75;
         
         riddleBtn.disabled = !enoughForRiddle;
         
@@ -1022,7 +1022,7 @@
             if (distance < 1.2) {
                 scene.remove(leaf);
                 leaves.splice(i, 1);
-                leafCount += 0.5;  // Each cheese is worth 0.5
+                leafCount += 1;  // Each cheese is worth 1
                 totalCollected += 1;
                 updateUI();
 
